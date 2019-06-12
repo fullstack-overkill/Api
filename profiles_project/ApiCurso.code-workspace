@@ -1,12 +1,5 @@
 {
-	"folders": [
-		{
-			"path": "/home/christopher/Documentos/criandoapi/apiJungle"
-		},
-		{
-			"path": "/home/christopher/Documentos/cocriahub"
-		}
-	],
+	"folders": [],
 	"settings": {
 		"python.pythonPath": "venv/bin/python3.7"
 	}
