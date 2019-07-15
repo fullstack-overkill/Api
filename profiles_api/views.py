@@ -5,6 +5,7 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.settings import api_settings
 
 from profiles_api import serializers
@@ -98,6 +99,8 @@ class HelloViewset(viewsets.ViewSet):
         return Response({'http_method': 'Delete' })
 
 class UserProfileViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+
     """Handle creating and updating profiles"""
     serializer_class = serializers.UserProfileSerializer
     queryset = models.UserProfile.objects.all()
@@ -105,9 +108,43 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     permission_classes = ( permissions.UpdateOwnProfile,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', 'email',)
-
+    
+    
+    
 
 class UserLoginApiView(ObtainAuthToken):
     """Gandle creating user authentication tokens"""
     
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+class userView(APIView):
+    #permission_classes = (IsAuthenticated,)
+    
+    def get(self, request,format=None):
+        print(request.user)
+        print("SADSDASDASDASD")
+        username = request.user
+        print(username)
+        equipe = models.UserProfile.objects.filter(email=username)
+        serializer = serializers.UserProfileSerializer(equipe,many=True)
+        
+        return Response(serializer.data)
+
+    
+    def post(self, request):
+        serializer = serializers.Userserializer(data=request.data)
+        #serializer.is_valid(raise_exception=ValueError)
+        serializer.create(validated_data=request.data, request=request)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    """
+    def put(self, request):
+        serializer = serializers.SquadSerializer(data=request.data)       
+        serializer.update(validated_data=request.data, request=request)
+        return Response(serializer.initial_data)
+
+    def patch(self, request):
+        serializer = serializers.SquadSerializer(data=request.data)       
+        serializer.patch(validated_data=request.data, request=request)
+        return Response(serializer.initial_data)
+    """

@@ -4,6 +4,8 @@ from rest_framework.routers import DefaultRouter
 
 from profiles_api import views
 
+from rest_framework_simplejwt import views as jwt_views
+
 router = DefaultRouter()
 router.register('hello-viewset', views.HelloViewset, base_name='hello-viewset')
 router.register('profile', views.UserProfileViewSet)
@@ -12,6 +14,8 @@ router.register('profile', views.UserProfileViewSet)
 urlpatterns = [
     path('hello-view/', views.HelloApiView.as_view()),
     path('login/', views.UserLoginApiView.as_view()),
+    path('user/', views.userView.as_view()),
+    path('token-auth/', jwt_views.TokenObtainPairView.as_view()),
     path('', include(router.urls)),
     
 ]

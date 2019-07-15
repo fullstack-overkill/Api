@@ -8,13 +8,16 @@ from django.conf import settings
 class UserProfileManager(BaseUserManager):
    """Manager for user profiles"""
 
-   def create_user(self, email, name, password=None):
+   def create_user(self, email, name, password=None, perfil=None, data=None, is_StarUser=True):
        """Create a new user profile"""
        if not email:
            raise ValueError('Users must have an email address')
 
        email = self.normalize_email(email)
        user = self.model(email=email, name=name,)
+       perfil = perfil
+       data = data
+       is_StarUser =  is_StarUser
 
        user.set_password(password)
        user.save(using=self._db)
@@ -23,7 +26,7 @@ class UserProfileManager(BaseUserManager):
 
    def create_superuser(self, email, name, password):
        """Create and save a new superuser with given details"""
-       user = self.create_user(email, name, password)
+       user = self.create_user(email, name, password,)
 
        user.is_superuser = True
        user.is_staff = True
@@ -35,13 +38,16 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
    """Database model for users in the system"""
    email = models.EmailField(max_length=255, unique=True)
    name = models.CharField(max_length=255)
+   perfil = models.TextField(max_length=255, blank=True)
+   data = models.DateTimeField(null=True)
    is_active = models.BooleanField(default=True)
    is_staff = models.BooleanField(default=False)
+   is_StarUser = models.BooleanField(default=True)
 
    objects = UserProfileManager()
 
    USERNAME_FIELD = 'email'
-   REQUIRED_FIELDS = ['name']
+   REQUIRED_FIELDS = ['name', 'data']
 
    def get_full_name(self):
        """Retrieve full name for user"""
@@ -61,7 +67,7 @@ class ProfileFeedItem(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete= models.CASCADE
     )
-    status_text = models.CharField(max_length=255)
+    status_text = models.CharField(max_length=255, null=True, blank=True)
     create_on = models.DateTimeField(auto_now_add=True)
 
 
