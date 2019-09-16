@@ -1,2 +1,3 @@
-# apiJungle
-Projeto de API Jungle Rest.
+# Api Django Rest
+
+Api de controle de estoque com permiçoes de login.
